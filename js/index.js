@@ -1,5 +1,6 @@
 
 (window => {
+	let rABS = false;
 	let inputBox = $('.inputBox');  //上传文件的盒子
 	let fileListBox = '';  //上传文件的盒子
 	let url;  //ajax交互的接口
@@ -101,10 +102,45 @@
 		
 		inputBox.click();  //调用input上传文件
 	},
+	fixdata = (data) => {
+	    var o = "", l = 0, w = 10240;
+	    for (; l < data.byteLength / w; ++l) o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w, l * w + w)));
+	    o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w)));
+	    return o;
+	},
 	handleChange = (files) => {
-
 		if(files.length === 0) return
+			console.log('files')
+			console.log(files)
+		var f = files[0];
+        var reader = new FileReader();
+        var name = f.name;
+        reader.onload = function (e) {
+            var data = e.target.result;
+            var wb;
+            var result;
+            if (rABS) {
+                wb = XLSX.read(data, { type: 'binary' });
+            } else {
+                var arr = fixdata(data);
+                wb = XLSX.read(btoa(arr), { type: 'base64' });
+            }
+            result =  XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+
+            dealData(result);
+
+            document.getElementById("excelBox").innerHTML = JSON.stringify(result);
+        };
+        if (rABS) reader.readAsBinaryString(f);
+        else reader.readAsArrayBuffer(f);
+
 		uploadFiles(files)
+	},
+	dealData = (data) => {
+		console.log(data)
+		data.forEach((item)=>{
+			
+		})
 	},
 	uploadFiles = (files) => {
         let postFiles = Array.prototype.slice.call(files);
@@ -116,7 +152,6 @@
     upload = (file) => {
     	let formData = new FormData();
         formData.append(file.name, file);
-        console.log(file.name)
 
         fileName = file.name;
         let innerCont = '<li>'+ fileName + '</li>';
