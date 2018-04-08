@@ -1,0 +1,27 @@
+@height: 300px;
+.uploadBox {
+	width: 500px;
+	margin: 20px auto;
+	display: block;
+	.uploadCont {
+		height: @height;
+	    background: #fff;
+	    border: 1px dashed #dddee1;
+	    border-radius: 4px;
+	    text-align: center;
+	    cursor: pointer;
+	    position: relative;
+	    overflow: hidden;
+	    transition: border-color .2s ease;
+	    &:hover {
+	    	border-color: #2d8cf0;
+	    }
+	    .inputBox {
+	    	display: none;
+	    }
+	    .uploadTxt {
+	    	line-height: @height;
+	    	color: #999;
+	    }
+	}
+}
