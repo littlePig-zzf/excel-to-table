@@ -99,7 +99,6 @@
 		})
 	},
 	handleClick = () => {  //处理鼠标单击事件
-		
 		inputBox.click();  //调用input上传文件
 	},
 	fixdata = (data) => {
@@ -110,8 +109,6 @@
 	},
 	handleChange = (files) => {
 		if(files.length === 0) return
-			console.log('files')
-			console.log(files)
 		var f = files[0];
         var reader = new FileReader();
         var name = f.name;
@@ -129,18 +126,34 @@
 
             dealData(result);
 
-            document.getElementById("excelBox").innerHTML = JSON.stringify(result);
+            // document.getElementById("excelBox").innerHTML = JSON.stringify(result);
         };
         if (rABS) reader.readAsBinaryString(f);
         else reader.readAsArrayBuffer(f);
 
 		uploadFiles(files)
 	},
-	dealData = (data) => {
+	dealData = (data) => {  //处理数据
 		console.log(data)
-		data.forEach((item)=>{
-			
+		let cont = '';
+		let headerTxt = '';
+
+		let head = Object.keys(data[0])
+		head.forEach((i)=>{
+			headerTxt += '<th>' + i +'</th>';
 		})
+
+		$('#theader').append(headerTxt)
+
+		data.forEach((item)=>{
+			let itemTxt = '';
+			for(var a in item) {
+				console.log(item[a]);
+				itemTxt += '<td>' + item[a] + '</td>';
+			}
+			cont += '<tr>' + itemTxt + '</tr>'; 
+		})
+		$('#tBody').append(cont)
 	},
 	uploadFiles = (files) => {
         let postFiles = Array.prototype.slice.call(files);
@@ -151,11 +164,13 @@
     },
     upload = (file) => {
     	let formData = new FormData();
-        formData.append(file.name, file);
-
         fileName = file.name;
+
+        formData.append(fileName, file);
+
         let innerCont = '<li>'+ fileName + '</li>';
-        fileListBox.append(innerCont)
+        // 上传文件的列表
+        fileListBox.append(innerCont);
         // uploadData.ajax({
         //     headers: this.headers,
         //     // withCredentials: this.withCredentials,

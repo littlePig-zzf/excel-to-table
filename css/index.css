@@ -24,3 +24,9 @@
   line-height: 300px;
   color: #999;
 }
+.uploadBox table {
+  border-collapse: collapse;
+}
+.uploadBox table th {
+  padding: 3px 20px;
+}
